@@ -22,6 +22,8 @@ NEXT VERSION (0.1.4):
 '''
 Ideas for near future:
 12. Upon pausing a session - rename Start button to Resume
+12.2 merge start and pause buttons to one button, when start is clicked make the name pause, when pause is clicked make the button name 
+resume, when stop is clicked make the button name start.
 13. Render irrelevant buttons unclickable when relevant
 11. Add a method to which you give time by epoch and it translates it into a string
 8. smart login - user can put username and continue. you can give a password, but don't have to
