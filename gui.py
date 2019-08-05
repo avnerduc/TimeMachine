@@ -4,39 +4,34 @@ import tkinter.messagebox
 import pickle
 
 '''
-CURRENT VERSION: 
-0.1.4
+Current Version: 0.1.3
 '''
 
 '''
 BUGS:
 Might not be compatible with UNIX OS. This is due to the difference between windows and UNIX path system,
-So Loading and Saving progress might cause crashes on non WIN systems
-'''
+So Loading and Saving progress might cause crashes on non WIN systems'''
 
 ''' 
-NEXT VERSION:
+NEXT VERSION (0.1.4):
 1. Code review
-11. Add a method to which you give time by epoch and it translates it into a string
 2. Basic Documentation
 3. Add exception (Single type)
 '''
 
 '''
 Ideas for near future:
-* Add a drop down menu to allow user to choose a category for his session
-10. make an executable file for the project
-15. Make moving the window easier (not require right click)
-9. always on top toggle
-8. smart login - user can put username and continue. you can give a password, but don't have to
 12. Upon pausing a session - rename Start button to Resume
-14. Add an indicator of the current status
 13. Render irrelevant buttons unclickable when relevant
+11. Add a method to which you give time by epoch and it translates it into a string
+8. smart login - user can put username and continue. you can give a password, but don't have to
+10. make an executable file for the project
+9. always on top toggle
 7. git repository
+14. Add an indicator of the current status
+* Add a drop down menu to allow user to choose a category for his session
 * Add an option to create new categories
 * Allow continuing from a closed running or paused session
-* Add an option to cancel current session (button)
-* When resetting, verify with user
 '''
 
 '''
@@ -83,14 +78,14 @@ class SessionMaster:
         def pause(self):
             self.status = SessionMaster.Session.PAUSED
             self.end_ticks = time.time()
-            self.total_ticks += (self.end_ticks - self.start_ticks)
+            self.total_ticks += int(self.end_ticks - self.start_ticks)
 
         def stop(self, rating=None):
             self.end_ticks = time.time()
             if rating:
                 self.rating = rating
             if self.get_status() == SessionMaster.Session.RUNNING:
-                self.total_ticks += (self.end_ticks - self.start_ticks)
+                self.total_ticks += int(self.end_ticks - self.start_ticks)
             self.status = SessionMaster.Session.STOPPED
 
         def get_start_time(self):
