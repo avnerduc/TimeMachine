@@ -119,19 +119,8 @@ class SessionMaster:
         self.in_sess = False  # Remove this and when terminating a session update self.curr_sess to None
         # Can create a status function that refers to curr_sess
         self.load()
-
         self.root_tk = tkinter.Tk()
         self.root_tk.title(SessionMaster.PROG_TITLE)
-        #print(self.root_tk.winfo_width()+1)
-
-
-
-        #self.root_tk.minsize(width=self.root_tk.winfo_width(), height=self.root_tk.winfo_height())
-
-
-
-
-
 
         # self.init_gui(self.root_tk)
         self.info = tkinter.Button(self.root_tk, text="Info", command=self.display_info)
@@ -150,12 +139,9 @@ class SessionMaster:
         self.reset_bot.pack()
 
         self.root_tk.update()
-        print (self.root_tk.winfo_width())
-        print (self.root_tk.winfo_height())
-        print (self.root_tk.winfo_geometry())
-        #len(SessionMaster.PROG_TITLE)*27
         size = str(self.root_tk.winfo_width()+37+(len(SessionMaster.PROG_TITLE)*7))+"x"+str(self.root_tk.winfo_height())
         self.root_tk.geometry(size)
+        #self.root_tk.minsize(width=self.root_tk.winfo_width(), height=self.root_tk.winfo_height())
 
 
 
