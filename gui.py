@@ -14,8 +14,12 @@ Current Version: 0.1.3
 '''
 BUGS:
 Might not be compatible with UNIX OS. This is due to the difference between windows and UNIX path system,
-##on macOS the save file isn't created in the same folder need to locate where it saved it and fix
-So Loading and Saving progress might cause crashes on non WIN systems'''
+So Loading and Saving progress might cause crashes on non WIN systems
+
+under macOS printing using print() crashes the program when running from the bash script
+need to fix the bash script probably, removed prints for now.
+
+'''
 
 ''' 
 NEXT VERSION (0.1.4):
@@ -146,6 +150,7 @@ class SessionMaster:
         self.root_tk.update()
         size = str(self.root_tk.winfo_width()+37+(len(SessionMaster.PROG_TITLE)*7))+"x"+str(self.root_tk.winfo_height())
         self.root_tk.geometry(size)
+        self.root_tk.attributes('-topmost', True)
         #self.root_tk.minsize(width=self.root_tk.winfo_width(), height=self.root_tk.winfo_height())
 
 
