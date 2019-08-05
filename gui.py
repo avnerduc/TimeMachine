@@ -1,7 +1,11 @@
+import os
 import time
 import tkinter
 import tkinter.messagebox
 import pickle
+
+dirpath = os.path.dirname(__file__) + '/'
+##print(dirpath + "history.pickle")
 
 '''
 Current Version: 0.1.3
@@ -10,6 +14,7 @@ Current Version: 0.1.3
 '''
 BUGS:
 Might not be compatible with UNIX OS. This is due to the difference between windows and UNIX path system,
+##on macOS the save file isn't created in the same folder need to locate where it saved it and fix
 So Loading and Saving progress might cause crashes on non WIN systems'''
 
 ''' 
@@ -37,11 +42,11 @@ resume, when stop is clicked make the button name start.
 '''
 
 '''
-Changelog:
+Change log:
 0.1.1 - Start, Stop, View (cmd)
-0.1.2 - Added giu
+0.1.2 - Added guy
 0.1.3 - 
-    1. Added autosave of progress into an extrenal file
+    1. Added autosave of progress into an external file
     2. Auto load progress from file when opening
 0.1.4 - 
     1. Added a pause button, allowing to pause a session and resume it later
@@ -162,20 +167,21 @@ class SessionMaster:
 
     def load(self):
         try:
-            with open("history.pickle", 'rb') as history_handle:
+            with open(dirpath + "history.pickle", 'rb') as history_handle:
                 self.history = pickle.load(history_handle)
         except IOError:
-            print("No saved progress found")
+            ##print("No saved progress found")
+            pass
         try:
-            with open("reset.pickle", 'rb') as reset_handle:
+            with open(dirpath + "reset.pickle", 'rb') as reset_handle:
                 self.last_reset = pickle.load(reset_handle)
         except IOError:
             pass  # This happens when the client never received a reset command
 
     def save(self):
-        with open('history.pickle', 'wb') as history_handle:
+        with open(dirpath + "history.pickle", 'wb') as history_handle:
             pickle.dump(self.history, history_handle, protocol=pickle.HIGHEST_PROTOCOL)
-        with open('reset.pickle', 'wb') as reset_handle:
+        with open(dirpath + "reset.pickle", 'wb') as reset_handle:
             pickle.dump(self.last_reset, reset_handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def start(self):
@@ -183,40 +189,40 @@ class SessionMaster:
             if self.curr_sess.get_status() == SessionMaster.Session.PAUSED:
                 self.curr_sess.start()
                 self.refresh()
-                print("Resuming session")
+                ##print("Resuming session")
                 return
             elif self.curr_sess.get_status() == SessionMaster.Session.RUNNING:
-                print("You are already in a session")
+                ##print("You are already in a session")
                 return
             else:
-                print("error")
+                ##print("error")
                 exit(1)
         self.in_sess = True
         self.curr_sess = SessionMaster.Session(len(self.history)+1)
         self.curr_sess.start()
         self.refresh()
-        print("Session {0} Started.".format(self.curr_sess.get_id()))
+        ##print("Session {0} Started.".format(self.curr_sess.get_id()))
 
     def pause(self):
         if not self.in_sess or not self.curr_sess:
-            print("There is no active session")
+            ##print("There is no active session")
             return False
         if self.curr_sess.get_status() == SessionMaster.Session.PAUSED:
-            print("Session is already paused")
+            ##print("Session is already paused")
             return False
         self.curr_sess.pause()
-        print("Session Paused")
+        ##print("Session Paused")
         return True
 
     def stop(self):
         if not self.in_sess or not self.curr_sess:
-            print("There is no active session")
+            ##print("There is no active session")
             return False
         self.curr_sess.stop()
         self.history.append(self.curr_sess)
         self.in_sess = False
         self.save()
-        print("Session {0} Stopped.".format(self.curr_sess.get_id()))
+        ##print("Session {0} Stopped.".format(self.curr_sess.get_id()))
         # print(self)  # Prints full history
         return True
 
@@ -250,7 +256,7 @@ class SessionMaster:
         else:
             self.save()
         self.set_total_timer(0)
-        print("Counter Reset")
+        ##print("Counter Reset")
 
 
 session = SessionMaster()
