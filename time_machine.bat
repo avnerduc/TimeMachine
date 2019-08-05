@@ -1,0 +1,1 @@
+START /MIN python C:\Users\suppman\Desktop\time_machine\0.1.4.py
