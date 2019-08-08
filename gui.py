@@ -1,15 +1,22 @@
+import os
 import time
 import tkinter
 import tkinter.messagebox
 import pickle
+
+dirpath = os.path.dirname(__file__) + '/'
 
 '''
 VERSION: 
 0.1.5 Under Development
 '''
 
+'''Known Bugs:
+* Under macOS printing using print() crashes the program when running from the bash script
+need to fix the bash script probably, removed prints for now.'''
+
 '''
-Changelog:
+Change log:
 0.1.1 - Start, Stop, View (cmd)
 0.1.2 - Added gui
 0.1.3 - 
@@ -27,6 +34,7 @@ Changelog:
     1. Resetting a session when it's running or paused will now stop the session and save it before resetting timer
     2. Added git repository to BitBucket: https://avnerduc@bitbucket.org/avnerduc/timemachine.git
     3. Code adjustments, added basic documentation
+    4. 
 '''
 
 ''' 
@@ -66,7 +74,7 @@ def format_time(ticks):
 
 
 class SessionMaster:
-
+    PROG_TITLE = "TM"
     INFO = "This is a Time Machine.\n" \
            "Remember: There is no going back in time."
     GUI_REFRESH_RATE = 10  # in milliseconds
@@ -92,10 +100,11 @@ class SessionMaster:
         def pause(self):
             self.status = SessionMaster.Session.PAUSED
             self.total_ticks += (time.time() - self.start_ticks)
+            self.total_ticks += int(self.end_ticks - self.start_ticks)
 
         def stop(self):
             if self.get_status() == SessionMaster.Session.RUNNING:
-                self.total_ticks += (time.time() - self.start_ticks)
+                self.total_ticks += int(time.time() - self.start_ticks)
             self.status = SessionMaster.Session.STOPPED
 
         def get_status(self):
@@ -121,8 +130,9 @@ class SessionMaster:
         self.last_reset = 0
         self.curr_sess = None
         self.load()
-
         self.root_tk = tkinter.Tk()
+        self.root_tk.title(SessionMaster.PROG_TITLE)
+
         self.info = tkinter.Button(self.root_tk, text="Info", command=self.display_info)
         self.info.pack()
         self.session_time = tkinter.Label()
@@ -139,18 +149,26 @@ class SessionMaster:
         self.stop_bot.pack()
         self.reset_bot = tkinter.Button(self.root_tk, text="Reset", command=self.reset)
         self.reset_bot.pack()
+        # Added
+        self.root_tk.update()
+        size = str(self.root_tk.winfo_width()+37+(len(SessionMaster.PROG_TITLE)*7))+"x"+str(self.root_tk.winfo_height())
+        self.root_tk.geometry(size)
+        self.root_tk.attributes('-topmost', True)
+        #self.root_tk.minsize(width=self.root_tk.winfo_width(), height=self.root_tk.winfo_height())
+        # deddA
         self.refresh()
         self.root_tk.mainloop()
 
     '''Loads progress from file: Loads full session history of the user, as well as the last reset time.'''
     def load(self):
         try:
-            with open("history.pickle", 'rb') as history_handle:
+            with open(dirpath + "history.pickle", 'rb') as history_handle:
                 self.history = pickle.load(history_handle)
         except IOError:
-            print("No saved progress found")
+            # print("No saved progress found")
+            pass
         try:
-            with open("reset.pickle", 'rb') as reset_handle:
+            with open(dirpath + "reset.pickle", 'rb') as reset_handle:
                 self.last_reset = pickle.load(reset_handle)
         except IOError:
             pass  # This happens when no reset command was loaded. Legal and requires no action or feedback
@@ -158,13 +176,14 @@ class SessionMaster:
     '''Saves the session history and the last reset time to external files'''
     def save(self):
         try:
-            with open('history.pickle', 'wb') as history_handle:
+            with open(dirpath + 'history.pickle', 'wb') as history_handle:
                 pickle.dump(self.history, history_handle, protocol=pickle.HIGHEST_PROTOCOL)
-            with open('reset.pickle', 'wb') as reset_handle:
+            with open(dirpath + 'reset.pickle', 'wb') as reset_handle:
                 pickle.dump(self.last_reset, reset_handle, protocol=pickle.HIGHEST_PROTOCOL)
-            print("Progress Saved")
+            # print("Progress Saved")
         except IOError:
-            print("Error while saving progress")
+            # print("Error while saving progress")
+            pass
 
     '''Start a session or resume a paused one'''
     def start(self):
@@ -172,38 +191,38 @@ class SessionMaster:
             if self.curr_sess.get_status() == SessionMaster.Session.PAUSED:
                 self.curr_sess.start()
                 self.refresh()
-                print("Resuming session")
+                # print("Resuming session")
                 return True
             if self.curr_sess.get_status() == SessionMaster.Session.RUNNING:
-                print("You are already in a session")
+                # print("You are already in a session")
                 return False
         self.curr_sess = SessionMaster.Session(len(self.history) + 1)  # TODO if the master is indexing, remove argument
         self.curr_sess.start()
         self.refresh()
-        print("Session {0} Started".format(self.curr_sess.get_id()))
+        # print("Session {0} Started".format(self.curr_sess.get_id()))
 
     '''Pause a currently running session'''
     def pause(self):
         if not self.curr_sess or not self.curr_sess.get_status():
-            print("There is no active session")
+            # print("There is no active session")
             return False
         if self.curr_sess.get_status() == SessionMaster.Session.PAUSED:
-            print("Session is already paused")
+            # print("Session is already paused")
             return False
         self.curr_sess.pause()
-        print("Session Paused")
+        # print("Session Paused")
         return True
 
     '''Stop a currently running or paused session'''
     def stop(self):
         if not self.curr_sess or not self.curr_sess.get_status():
-            print("There is no active session")
+            # print("There is no active session")
             return False
         self.curr_sess.stop()
         self.history.append(self.curr_sess)
         self.save()
-        print("Session {0} Stopped".format(self.curr_sess.get_id()))
-        print(self)  # Prints full history
+        # print("Session {0} Stopped".format(self.curr_sess.get_id()))
+        # print(self)  # Prints full history
         return True
 
     '''Resets the total time timer.
@@ -214,7 +233,7 @@ class SessionMaster:
             self.stop()
         self.save()
         self.set_total_timer(0)
-        print("Counter Reset")
+        # print("Counter Reset")
 
     '''Updates the GUI, refreshing current session and total time.
     If there is a running session, will schedule another GUI refresh according to SessionMaster.GUI_REFRESH_RATE'''
