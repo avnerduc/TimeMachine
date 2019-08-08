@@ -11,12 +11,13 @@ VERSION:
 0.1.5 Under Development
 '''
 
-'''Known Bugs:
+'''
+KNOWN BUGS:
 * Under macOS printing using print() crashes the program when running from the bash script
 need to fix the bash script probably, removed prints for now.'''
 
 '''
-Change log:
+CHANGE LOG:
 0.1.1 - Start, Stop, View (cmd)
 0.1.2 - Added gui
 0.1.3 - 
@@ -26,20 +27,14 @@ Change log:
     1. Added a pause button, allowing to pause a session and resume it later by pressing the start button
     2. Added a reset button, allowing to reset the total time displayed (full history is still being saved)
     3. Added git repository to github: https://github.com/avnerduc/TimeMachine.git
-'''
-
-'''
----------------------------------------------------IN PROGRESS---------------------------------------------------------
 0.1.5 - 
     1. Resetting a session when it's running or paused will now stop the session and save it before resetting timer
     2. Added git repository to BitBucket: https://avnerduc@bitbucket.org/avnerduc/timemachine.git
     3. Code adjustments, added basic documentation
-    4. 
-'''
-
-''' 
-IN PROGRESS:
-Now merging with Michael's branch
+    4. The timer is now always on top
+    5. The timer now has a constant title - 'TM'
+    6. Added interpreter-dependant scripts that run the timer for Windows and for Mac
+    7. Gui width increased so it is draggable, starting gui width is dependant on title
 '''
 
 '''
@@ -99,8 +94,7 @@ class SessionMaster:
 
         def pause(self):
             self.status = SessionMaster.Session.PAUSED
-            self.total_ticks += (time.time() - self.start_ticks)
-            self.total_ticks += int(self.end_ticks - self.start_ticks)
+            self.total_ticks += int(time.time() - self.start_ticks)
 
         def stop(self):
             if self.get_status() == SessionMaster.Session.RUNNING:
